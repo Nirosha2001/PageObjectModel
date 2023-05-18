@@ -1,46 +1,37 @@
-package pom.alert.testcases;
+package testcases;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import pom.alert.pages.AlertPages;
-import utils.ProjectWrappers;
+import utils.DP005;
+import wrappers.GenericWrappers;
 
-public class TC005 extends ProjectWrappers {
-@BeforeClass
+public class TC005 extends GenericWrappers{
+@Test(dataProvider="fetchdata",dataProviderClass=DP005.class)
+    public void prompAlert(String name,String verifytext1,String verifytext2) {
 	
-	public void beforeClass() {
-		testcaseName="TC005";
-		testCaseDescription="To verify confirmalert";
-		author="Nirosha";
-		category="smoke";
-		sheetname="TC005";
-		browsername="chrome";
-		url="https://www.w3schools.com/js/tryit.asp?filename=tryjs_prompt";
-		
-	}
-	@Test(dataProvider="fetchData")
+	invokeApp("chrome", "https://www.w3schools.com/js/tryit.asp?filename=tryjs_prompt");
+	wait(3000);
+	switchToFrame("iframeResult");
+	clickByXpathNoSnap("/html/body/button");
+	getAlertText();
+	promptEnterData(name);
+	acceptAlert();
+	verifyTextById("demo",verifytext1);
+	refresh();
+	wait(3000);
+	switchToFrame("iframeResult");
+	clickByXpathNoSnap("/html/body/button");
+	getAlertText();
+	promptEnterData(name);
+	dismissAlert();
+	verifyTextById("demo", verifytext2);
+	switchToDefault();
+	clickById("tryhome");
+	switchToLastWindow();
 	
-	public void promptAlert(String text1,String text2,String text3) {
-		new AlertPages()
-		.switchToFrame()
-		.clickTryButton()
-		.alertText()
-		.enterUserText(text1)
-		.clickOk()
-		.verifyOkText(text2)
-		.refreshPage()
-		.switchToFrame()
-		.clickTryButton()
-		.alertText()
-		.enterUserText(text1)
-		.clickCancel()
-		.verifyCancelText(text3)
-		.backToDefault()
-		.clickHomeButton()
-		.switchtoLastWindow();
-		
-		
-	}
+	
+	
+	
+}
 
 }

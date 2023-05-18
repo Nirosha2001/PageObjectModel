@@ -1,38 +1,23 @@
-package pom.alert.testcases;
+package testcases;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import pom.alert.pages.AlertPages;
-import utils.ProjectWrappers;
+import wrappers.GenericWrappers;
 
-public class TC003 extends ProjectWrappers {
+public class TC003 extends GenericWrappers{
+@Test
+    public void simpleAlert() {
 	
-	@BeforeClass
-	
-	public void beforeClass() {
-		testcaseName="TC003";
-		testCaseDescription="To verify simplealert";
-		author="Nirosha";
-		category="smoke";
-		browsername="chrome";
-		url="https://www.w3schools.com/js/tryit.asp?filename=tryjs_alert";
-		
-	}
-	@Test
-	public void simpleAlert() {
-		
-		new AlertPages()
-		.switchToFrame()
-		.clickTryButton()
-		.alertText()
-		.clickOk()
-		.backToDefault()
-		.clickHomeButton()
-		.switchtoLastWindow();
-		
-		
-	}
+	invokeApp("chrome","https://www.w3schools.com/js/tryit.asp?filename=tryjs_alert");
+	wait(3000);
+	switchToFrame("iframeResult");
+	clickByXpathNoSnap("/html/body/button");
+	getAlertText();
+	acceptAlert();
+	switchToDefault();
+	clickById("tryhome");
+	switchToLastWindow();
+}
 	
 
 }
