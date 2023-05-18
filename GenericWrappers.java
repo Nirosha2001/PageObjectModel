@@ -1,12 +1,9 @@
 package wrappers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.ElementClickInterceptedException;
@@ -30,31 +27,9 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 
-import utils.Reporting;
-
-public class GenericWrappers extends Reporting implements Wrappers {
+public class GenericWrappers implements Wrappers {
 	
-	public static RemoteWebDriver driver;
-	
-	public static Properties prop;
-	
-	public void loadObjects() {
-		
-		try {
-			prop=new Properties();
-			prop.load(new FileInputStream("./src/test/java/Object.properties"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void unLoadObjects() {
-		prop=null;
-	}
+	RemoteWebDriver driver;
 	int i=1;
 
 	public void invokeApp(String browser, String url) {
@@ -75,23 +50,21 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			}
 			driver.manage().window().maximize();
 			driver.get(url);
-			driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
-			//System.out.println("The browser "+ browser+" is launched with given url "+url+" succesfully");
-			reportStep("The browser "+ browser+" is launched with given url "+url+" succesfully","PASS");
-			} catch (SessionNotCreatedException e) {
+			System.out.println("The browser "+ browser+" is launched with given url "+url+" succesfully");
+		} catch (SessionNotCreatedException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The browser "+browser+" is not launched due to session not created error");
-			reportStep("The browser "+browser+" is not launched due to session not created error","fail");
+			System.err.println("The browser "+browser+" is not launched due to session not created error");
 		}
 		  catch (InvalidArgumentException e) {
 			// TODO: handle exception
-			 // System.err.println("The browser "+browser+" is not launched due to wrong url as url does not contain https/https");
-			  reportStep("The browser "+browser+" is not launched due to wrong url as url does not contain https","fail");
+			  System.err.println("The browser "+browser+" is not launched due to wrong url as url does not contain https/https");
 		}
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			  //System.err.print("The browser "+browser+" is not launched due unknown error ");
-			  reportStep("The browser "+browser+" is not launched due unknown error ","fail");
+			  System.err.print("The browser "+browser+" is not launched due unknown error ");
+		}
+		finally {
+			takeSnap();
 		}
 	}
 
@@ -99,42 +72,38 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementById(idValue).sendKeys(data);
-			//System.out.println("The element with id "+idValue+" is entered with data "+data);
-			reportStep("The element with id "+idValue+" is entered with data "+data,"pass");
+			System.out.println("The element with id "+idValue+" is entered with data "+data);
 			
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-			//System.err.print("The element with id "+idValue+" is not found in DOM");
-			reportStep("The element with id "+idValue+" is not found in DOM","fail");
+			System.err.print("The element with id "+idValue+" is not found in DOM");
 		}
 		 catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-				//System.err.print("The element with id "+idValue+" is not visible in application");
-			 reportStep("The element with id "+idValue+" is not visible in application","fail");
+				System.err.print("The element with id "+idValue+" is not visible in application");
  
 		}
 		 catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-				//System.err.print("The element with id "+idValue+" is not interactable in application");
-			 reportStep("The element with id "+idValue+" is not interactable in application","fail");
+				System.err.print("The element with id "+idValue+" is not interactable in application");
 
 		 }
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+idValue+" is not stable in application");
-			reportStep("The element with id "+idValue+" is not stable in application","fail");
+			System.err.print("The element with id "+idValue+" is not stable in application");   
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+idValue+"is not entered with data "+data+" as unexpected alert opened");   
-           reportStep("The element with id "+idValue+"is not entered with data "+data+" as unexpected alert opened","fail");   
+			System.err.print("The element with id "+idValue+"is not entered with data "+data+" as unexpected alert opened");   
+
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+idValue+" is not entered with data "+data+" due to unknown error");
-			reportStep("The element with id "+idValue+" is not entered with data "+data+" due to unknown error","fail");
+			System.err.print("The element with id "+idValue+" is not entered with data "+data+" due to unknown error");
 		}
-	
+		finally {
+			takeSnap();
+		}
 	}
 
 
@@ -142,38 +111,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByName(nameValue).sendKeys(data);
-			//System.out.println("The element with name "+nameValue+" is entered with data "+data);
-			reportStep("The element with name "+nameValue+" is entered with data "+data,"pass");
+			System.out.println("The element with name "+nameValue+" is entered with data "+data);
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with name "+nameValue+" is not found in DOM");
-			reportStep("The element with name "+nameValue+" is not found in DOM","fail");
+			System.err.println("The element with name "+nameValue+" is not found in DOM");
 		}
 		  catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			  //System.err.println("The element with name "+nameValue+" is not visible in Application");
-			  reportStep("The element with name "+nameValue+" is not visible in Application","fail");
+			  System.err.println("The element with name "+nameValue+" is not visible in Application");
 		}
 		  catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			  //System.err.println("The element with name "+nameValue+" is not interactable in Application");
-			  reportStep("The element with name "+nameValue+" is not interactable in Application","fail");
+			  System.err.println("The element with name "+nameValue+" is not interactable in Application");
 		}
 		  catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			  //System.out.println("The element with name "+nameValue+" is not stable in application");
-			  reportStep("The element with name "+nameValue+" is not stable in application","fail");
+			  System.out.println("The element with name "+nameValue+" is not stable in application");
 		}
 		  catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			  //System.out.println("The element with name "+nameValue+" is not not entered with data "+data+" as unexpected alert opened");
-			  reportStep("The element with name "+nameValue+" is not not entered with data "+data+" as unexpected alert opened","fail");
+			  System.out.println("The element with name "+nameValue+" is not not entered with data "+data+" as unexpected alert opened");
 		}
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			 // System.out.println("The element with name "+nameValue+" is not entered with data "+data+" due to unknown error");
-			  reportStep("The element with name "+nameValue+" is not entered with data "+data+" due to unknown error","fail");
+			  System.out.println("The element with name "+nameValue+" is not entered with data "+data+" due to unknown error");
 		}
+		finally {
+			takeSnap();
+	}
 		
 	}
 
@@ -181,39 +146,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByXPath(xpathValue).sendKeys(data);
-			//System.out.println("The element with Xpath "+xpathValue+" is entered with data "+data);
-			reportStep("The element with Xpath "+xpathValue+" is entered with data "+data,"pass");
+			System.out.println("The element with Xpath "+xpathValue+" is entered with data "+data);
 		} catch (UnhandledAlertException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpathValue+" is not entered with data "+data+" as unexpexted alert opened");
-			reportStep("The element with xpath "+xpathValue+" is not entered with data "+data+" as unexpexted alert opened","fail");
+			System.err.println("The element with xpath "+xpathValue+" is not entered with data "+data+" as unexpexted alert opened");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathValue+" is not found in DOM");
-			reportStep("The element with xpath "+xpathValue+" is not found in DOM","fail");
-	
+			System.err.println("The element with xpath "+xpathValue+" is not found in DOM");
 		}
 		 catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			// System.err.println("The element with xpath "+xpathValue+" is not visible in Application");
-			 reportStep("The element with xpath "+xpathValue+" is not visible in Application","fail");
+			 System.err.println("The element with xpath "+xpathValue+" is not visible in Application");
 		}
 		 catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			// System.err.println("The element with xpath "+xpathValue+" is not interactable in Application");
-			 reportStep("The element with xpath "+xpathValue+" is not interactable in Application","fail");
+			 System.err.println("The element with xpath "+xpathValue+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathValue+" is not stable in Application");
-			reportStep("The element with xpath "+xpathValue+" is not stable in Application","fail");
+			System.err.println("The element with xpath "+xpathValue+" is not stable in Application");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathValue+"is not entered with data "+data+" due to unknown errors");
-			reportStep("The element with xpath "+xpathValue+"is not entered with data "+data+" due to unknown errors","fail");
+			System.err.println("The element with xpath "+xpathValue+"is not entered with data "+data+" due to unknown errors");
 		}
+		finally {
+			takeSnap();
+	}
 		
 	}
 
@@ -222,23 +182,22 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		try {
 			String browsertitle=driver.getTitle();
 			if(browsertitle.equals(title)) {
-				//System.out.println("The title of the page "+browsertitle+" is matched with expected title "+title);
-				reportStep("The title of the page "+browsertitle+" is matched with expected title "+title,"pass");
+				System.out.println("The title of the page "+browsertitle+" is matched with expected title "+title);
 			}
 			else {
-				//System.out.println("The title of page "+browsertitle+" is not matched with expected title "+title);
-				reportStep("The title of page "+browsertitle+" is not matched with expected title "+title,"pass");
+				System.out.println("The title of page "+browsertitle+" is not matched with expected title "+title);
 			}
 		} catch (UnhandledAlertException e) {
 			// TODO Auto-generated catch block
-			//System.err.print(" The title of page "+ title +"cannot be verified due to unexpected alert occured");
-			reportStep(" The title of page "+ title +"cannot be verified due to unexpected alert occured","fail");
+			System.err.print(" The title of page "+ title +"cannot be verified due to unexpected alert occured");
 			
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println(" The title of page "+title+" cannot be verified due to unknown errors");
-			reportStep(" The title of page "+title+" cannot be verified due to unknown errors","fail");
+			System.err.println(" The title of page "+title+" cannot be verified due to unknown errors");
+		}
+		finally {
+			takeSnap();
 		}
 		
 	}
@@ -248,42 +207,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		try {
 			String verifytext=driver.findElementById(id).getText();
 			if(verifytext.equals(text)) {
-				//System.out.println("The element with id "+id+" contains text "+verifytext+" is matched with given text "+text);
-				reportStep("The element with id "+id+" contains text "+verifytext+" is matched with given text "+text,"pass");
+				System.out.println("The element with id "+id+" contains text "+verifytext+" is matched with given text "+text);
 			}
 			else {
-				//System.out.println("The element with id "+id+" contains text "+verifytext+" is not matched with given text "+text);
-				reportStep("The element with id "+id+" contains text "+verifytext+" is not matched with given text "+text,"pass");
+				System.out.println("The element with id "+id+" contains text "+verifytext+" is not matched with given text "+text);
 			}
 		} 
 		catch(NoSuchElementException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+id+" is not found in DOM");
-			reportStep("The element with id "+id+" is not found in DOM","fail");
+			System.err.println("The element with id "+id+" is not found in DOM");
 		 }
 		  catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			  //System.err.println("The element with id "+id+" is not visible in Application");
-			  reportStep("The element with id "+id+" is not visible in Application","fail");
+			  System.err.println("The element with id "+id+" is not visible in Application");
 		}
 		  catch(ElementNotInteractableException e) {
-			  //System.err.println("The element with id "+id+" is not interactable in application");
-			  reportStep("The element with id "+id+" is not interactable in application","fail");
+			  System.err.println("The element with id "+id+" is not interactable in application");
 		  }
 		  catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			 // System.err.println("The element with id "+id+" is not stable in application");
-			  reportStep("The element with id "+id+" is not stable in application","fail");
+			  System.err.println("The element with id "+id+" is not stable in application");
 		}
 		  catch (UnhandledAlertException e) {
-			  //System.err.println("The element with id "+ id+" cannot be verified due to unexpected alert occured");
+			  System.err.println("The element with id "+ id+" cannot be verified due to unexpected alert occured");
 			// TODO: handle exception
-			  reportStep("The element with id "+ id+" cannot be verified due to unexpected alert occured","fail");
 		  }
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			  //System.err.println("The element with id "+id+" cannot be verified due to unknown error");
-			  reportStep("The element with id "+id+" cannot be verified due to unknown error","fail");
+			  System.err.println("The element with id "+id+" cannot be verified due to unknown error");
 		}
 		
 	}
@@ -294,41 +245,36 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			String text2=driver.findElementByXPath(xpath).getText();
 			
 			if(text2.equals(text)) {
-				//System.out.println("The element with xpath "+xpath+" contains text "+text2+" is matched with given text "+text);
-				reportStep("The element with xpath "+xpath+" contains text "+text2+" is matched with given text "+text,"pass");
+				System.out.println("The element with xpath "+xpath+" contains text "+text2+" is matched with given text "+text);
 			}
 			else {
-				//System.out.println("The element with xpath" +xpath+" contains text "+text2+" is not matched with given text "+text);
-				reportStep("The element with xpath" +xpath+" contains text "+text2+" is not matched with given text "+text,"pass");
+				System.out.println("The element with xpath" +xpath+" contains text "+text2+" is not matched with given text "+text);
 			}
 		}
 		catch (NoSuchElementException e) {
 				// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" is not found in DOM")	;
-			reportStep("The element with xpath "+xpath+" is not found in DOM","fail")	;
+			System.err.println("The element with xpath "+xpath+" is not found in DOM")	;
 			}
 		 catch (ElementNotVisibleException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpath+" is not visible in Application");
-			 reportStep("The element with xpath "+xpath+" is not visible in Application","fail");
+			System.err.println("The element with xpath "+xpath+" is not visible in Application");
 			
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" is not stable in Application");
-			reportStep("The element with xpath "+xpath+" is not stable in Application","fail");
+			System.err.println("The element with xpath "+xpath+" is not stable in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured");
-			reportStep("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured","fail");
+			System.err.println("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" cannot be verified due to unknown error occured");
-			reportStep("The element with xpath "+xpath+" cannot be verified due to unknown error occured","fail");
+			System.err.println("The element with xpath "+xpath+" cannot be verified due to unknown error occured");
 		}
-	
+		finally {
+			takeSnap();
+		}
 		
 	}
 
@@ -337,43 +283,37 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		try {
 			String text3=driver.findElementByXPath(xpath).getText();
 			if(text3.contains(text)) {
-				//System.out.println("The element with xpath "+xpath+" contains text "+text3+" is matched with given text "+ text);
-				reportStep("The element with xpath "+xpath+" contains text "+text3+" is matched with given text "+ text,"pass");
+				System.out.println("The element with xpath "+xpath+" contains text "+text3+" is matched with given text "+ text);
 			}
 			else {
-				//System.out.println("The element with xpath "+xpath+" contains text "+text3+" is not matched with given text "+text);
-				reportStep("The element with xpath "+xpath+" contains text "+text3+" is not matched with given text "+text,"pass");
+				System.out.println("The element with xpath "+xpath+" contains text "+text3+" is not matched with given text "+text);
 			}
 		} catch (ElementNotVisibleException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpath+" is not visible in application");
-			reportStep("The element with xpath "+xpath+" is not visible in application","fail");
+			System.err.println("The element with xpath "+xpath+" is not visible in application");
 			
 		}
 		 catch(NoSuchElementException e) {
-			 //System.err.println("The element with xpath "+xpath+" is not found in DOM");
-			 reportStep("The element with xpath "+xpath+" is not found in DOM","fail");
+			 System.err.println("The element with xpath "+xpath+" is not found in DOM");
 		 }
 		 catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			// System.err.println("The element with xpath "+ xpath+ "is not stable in Application");
-			 reportStep("The element with xpath "+ xpath+ "is not stable in Application","fail");
-			 
+			 System.err.println("The element with xpath "+ xpath+ "is not stable in Application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" is not interactable in Application");
-			reportStep("The element with xpath "+xpath+" is not interactable in Application","fail");
+			System.err.println("The element with xpath "+xpath+" is not interactable in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured");
-			reportStep("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured","fail");
+			System.err.println("The element with xpath "+xpath+" cannot be verified due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" cannot be verified due to unknown errors");
-			reportStep("The element with xpath "+xpath+" cannot be verified due to unknown errors","fail");
+			System.err.println("The element with xpath "+xpath+" cannot be verified due to unknown errors");
+		}
+		finally {
+			takeSnap();
 		}
 		
 	}
@@ -382,38 +322,35 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementById(id).click();
-			//System.out.println("The element with id "+id+" is clicked");
-			reportStep("The element with id "+id+" is clicked","pass");
+			System.out.println("The element with id "+id+" is clicked");
 		} catch (ElementClickInterceptedException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+id+" is not clickable");
-			reportStep("The element with id "+id+" is not clickable","fail");
+			System.err.println("The element with id "+id+" is not clickable");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+id+" is not found in DOM");
-			reportStep("The element with id "+id+" is not found in DOM","fail");
+			System.err.print("The element with id "+id+" is not found in DOM");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+id+" is not interactable in Application");
-			reportStep("The element with id "+id+" is not interactable in Application","fail");
+			System.err.print("The element with id "+id+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not stable in Application");
-			reportStep("The element with id "+id+" is not stable in Application","fail");
+			System.err.println("The element with id "+id+" is not stable in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+id+" is not clicked"+" due to unexpected alert occured");
-			reportStep("The element with id "+id+" is not clicked"+" due to unexpected alert occured","fail");
+			System.err.print("The element with id "+id+" is not clicked"+" due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not clicked due to some unknown errors");
-			reportStep("The element with id "+id+" is not clicked due to some unknown errors","fail");
+			System.err.println("The element with id "+id+" is not clicked due to some unknown errors");
 		}
+		finally {
+			takeSnap();
+		}
+		
 			
 		}
 		
@@ -421,39 +358,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByClassName(classVal).click();
-			//System.out.println("The element with classvalue "+classVal+" is clicked");
-			reportStep("The element with classvalue "+classVal+" is clicked","pass");
+			System.out.println("The element with classvalue "+classVal+" is clicked");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.print("The element with classvalue "+classVal+" is not found in DOM");
-			reportStep("The element with classvalue "+classVal+" is not found in DOM","fail");
+			System.err.print("The element with classvalue "+classVal+" is not found in DOM");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.print("The element with classvalue "+classVal+" is not clicked due to unexpected alert occured");
-			reportStep("The element with classvalue "+classVal+" is not clicked due to unexpected alert occured","fail");
+			System.err.print("The element with classvalue "+classVal+" is not clicked due to unexpected alert occured");
 		}
 		catch (ElementClickInterceptedException e) {
 			// TODO: handle exception
-			//System.err.println("The element eith classVal "+classVal+" is not clickable");
-			reportStep("The element eith classVal "+classVal+" is not clickable","fail");
+			System.err.println("The element eith classVal "+classVal+" is not clickable");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.print("The element with classvalue "+classVal+" is not interactable in Application");
-			reportStep("The element with classvalue "+classVal+" is not interactable in Application","fail");
-			
+			System.err.print("The element with classvalue "+classVal+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with classvalue "+classVal+" is not stable in Application");
-			reportStep("The element with classvalue "+classVal+" is not stable in Application","fail");
+			System.err.println("The element with classvalue "+classVal+" is not stable in Application");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with classvalue "+classVal+" is not clicked due to some unknown errors");
-			reportStep("The element with classvalue "+classVal+" is not clicked due to some unknown errors","fail");
+			System.err.println("The element with classvalue "+classVal+" is not clicked due to some unknown errors");
+		}
+		finally {
+			takeSnap();
 		}
 		
 			
@@ -464,38 +396,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByName(name).click();
-			//System.out.println("The element with name "+ name+" is clicked");
-			reportStep("The element with name "+ name+" is clicked","pass");
+			System.out.println("The element with name "+ name+" is clicked");
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-		    //System.err.println("The element with name "+name+" is not found in Dom");
-			reportStep("The element with name "+name+" is not found in Dom","fail");
+		    System.err.println("The element with name "+name+" is not found in Dom");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" is not visible in application");
-			reportStep("The element with name "+name+" is not visible in application","fail");
+			System.err.println("The element with name "+name+" is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" is not interactable in application");
-			reportStep("The element with name "+name+" is not interactable in application","fail");
+			System.err.println("The element with name "+name+" is not interactable in application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" is not stable in application");
-			reportStep("The element with name "+name+" is not stable in application","fail");
+			System.err.println("The element with name "+name+" is not stable in application");
 
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+"cannot be clicked due to unexpected alert occured");
-			reportStep("The element with name "+name+"cannot be clicked due to unexpected alert occured","fail");
+			System.err.println("The element with name "+name+"cannot be clicked due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" cannot be clicked due to unknown error occured");
-			reportStep("The element with name "+name+" cannot be clicked due to unknown error occured","fail");
+			System.err.println("The element with name "+name+" cannot be clicked due to unknown error occured");
+		}
+		finally {
+			takeSnap();
 		}
 	}
 
@@ -503,37 +431,33 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByLinkText(name).click();
-            //System.out.println("The element with linktext "+name+" is clicked");
-			reportStep("The element with linktext "+name+" is clicked","pass");
+            System.out.println("The element with linktext "+name+" is clicked");
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-		    //System.err.println("The element with linktext "+name+" is not found in Dom");
-			reportStep("The element with linktext "+name+" is not found in Dom","fail");
+		    System.err.println("The element with linktext "+name+" is not found in Dom");
 		}
 		catch (ElementClickInterceptedException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not clickable");
-			reportStep("The element with linktext "+name+" is not clickable","fail");
+			System.err.println("The element with linktext "+name+" is not clickable");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not clicked due to unexpected alert occured");
-			reportStep("The element with linktext "+name+" is not clicked due to unexpected alert occured","fail");
+			System.err.println("The element with linktext "+name+" is not clicked due to unexpected alert occured");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not interactable in application");
-			reportStep("The element with linktext "+name+" is not interactable in application","fail");
+			System.err.println("The element with linktext "+name+" is not interactable in application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not stable in Application");
-			reportStep("The element with linktext "+name+" is not stable in Application","fail");
+			System.err.println("The element with linktext "+name+" is not stable in Application");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" not clicked due to unknown error occured");
-			reportStep("The element with linktext "+name+" not clicked due to unknown error occured","fail");
+			System.err.println("The element with linktext "+name+" not clicked due to unknown error occured");
+		}
+		finally {
+			takeSnap();
 		}
 		
 		
@@ -543,42 +467,35 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByLinkText(name).click();
-			//System.out.println("The element with linktext "+name+" is clicked");
+			System.out.println("The element with linktext "+name+" is clicked");
 		} catch (ElementNotVisibleException e) {
 			// TODO Auto-generated catch block
 			System.err.println("The element with linktext "+name+" is not visible in Application" );
-			reportStep("The element with linktext "+name+" is not visible in Application" ,"pass");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not found in Dom");
-			reportStep("The element with linktext "+name+" is not found in Dom","fail");
+			System.err.println("The element with linktext "+name+" is not found in Dom");
 		}
 		catch (ElementClickInterceptedException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not clickable");
-			reportStep("The element with linktext "+name+" is not clickable","fail");
+			System.err.println("The element with linktext "+name+" is not clickable");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not interactable in application");
-			reportStep("The element with linktext "+name+" is not interactable in application","fail");
+			System.err.println("The element with linktext "+name+" is not interactable in application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.print("The element with linktext "+name+"is not clicked due to unexpected alert occured");
-			reportStep("The element with linktext "+name+"is not clicked due to unexpected alert occured","fail");
+			System.err.print("The element with linktext "+name+"is not clicked due to unexpected alert occured");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with linktext "+name+" is not stable in Application");
-			reportStep("The element with linktext "+name+" is not stable in Application","fail");
+			System.err.println("The element with linktext "+name+" is not stable in Application");
 
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with linktext "+name+" is not clicked due to unknown error occured");
-			reportStep("The element with linktext "+name+" is not clicked due to unknown error occured","fail");
+			System.err.print("The element with linktext "+name+" is not clicked due to unknown error occured");
 		}
 		
 	}
@@ -587,39 +504,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByXPath(xpathVal).click();
-			//System.out.println("The element with xpath "+xpathVal+" is clicked");
-			reportStep("The element with xpath "+xpathVal+" is clicked","pass");
-			
+			System.out.println("The element with xpath "+xpathVal+" is clicked");
 		}
 		  catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not found in DOM");
-			  reportStep("The element with xpath "+xpathVal+" is not found in DOM","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not found in DOM");
 		}
 		  catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured");
-			  reportStep("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured");
 		}
 		catch (ElementClickInterceptedException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not clickable");
-			reportStep("The element with xpath "+xpathVal+" is not clickable","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not clickable");
 		}
 		  catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not interactable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not interactable in Application","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not stable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not stable in Application","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not stable in Application");
 		}
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not clicked due to some unknown errors");
-			  reportStep("The element with xpath "+xpathVal+" is not clicked due to some unknown errors","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not clicked due to some unknown errors");
+		}
+		finally {
+			takeSnap();
 		}
 
 		
@@ -629,43 +541,35 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.findElementByXPath(xpathVal).click();
-			//System.out.println("The element with xpath "+xpathVal+" is clicked");
-			reportStep("The element with xpath "+xpathVal+" is clicked","pass",false);
+			System.out.println("The element with xpath "+xpathVal+" is clicked");
 		} 
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not visible in application");
-			reportStep("The element with xpath "+xpathVal+" is not visible in application","fail",false);
+			System.err.println("The element with xpath "+xpathVal+" is not visible in application");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.print("The element with xpath "+xpathVal+" is not found in DOM");
-			reportStep("The element with xpath "+xpathVal+" is not found in DOM","fail",false);
+			System.err.print("The element with xpath "+xpathVal+" is not found in DOM");
 		}
 		catch (ElementClickInterceptedException e) {
 			// TODO: handle exception
-			//System.err.print("The element with "+xpathVal+" is not clickable");
-			reportStep("The element with "+xpathVal+" is not clickable","fail",false);
+			System.err.print("The element with "+xpathVal+" is not clickable");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.print("The element with xpath "+xpathVal+" is not interactable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not interactable in Application","fail",false);
+			System.err.print("The element with xpath "+xpathVal+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.print("The element with xpath "+xpathVal+" is not stable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not stable in Application","fail",false);
+			System.err.print("The element with xpath "+xpathVal+" is not stable in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.print("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured");
-			reportStep("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured","fail",false);
+			System.err.print("The element with xpath "+xpathVal+" is not clicked due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not clicked due to some unknown errors");
-			reportStep("The element with xpath "+xpathVal+" is not clicked due to some unknown errors","fail",false);
+			System.err.println("The element with xpath "+xpathVal+" is not clicked due to some unknown errors");
 		}
 		
 	}
@@ -675,37 +579,33 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		String text=null;
 		try {
 			 text=driver.findElementById(idVal).getText();
-			 //System.out.println(text);
-			 reportStep(text,"pass");
+			 System.out.println(text);
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+idVal+" is not found in DOM");
-			reportStep("The element with id "+idVal+" is not found in DOM","fail");
+			System.err.println("The element with id "+idVal+" is not found in DOM");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id"+idVal+" is not visible in Application");
-			reportStep("The element with id"+idVal+" is not visible in Application","fail");
+			System.err.println("The element with id"+idVal+" is not visible in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+idVal+" cannot get due to unexpected alert occured");
-			reportStep("The element with id "+idVal+" cannot get due to unexpected alert occured","fail");
+			System.err.println("The element with id "+idVal+" cannot get due to unexpected alert occured");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+idVal+" is not interactable in Application");
-			reportStep("The element with id "+idVal+" is not interactable in Application","fail");
+			System.err.println("The element with id "+idVal+" is not interactable in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+idVal+" is not stable in Application");
-			reportStep("The element with id "+idVal+" is not stable in Application","fail");
+			System.err.println("The element with id "+idVal+" is not stable in Application");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+idVal+" cannot get due to unknown errors");
-			reportStep("The element with id "+idVal+" cannot get due to unknown errors","fail");
+			System.err.println("The element with id "+idVal+" cannot get due to unknown errors");
+		}
+		finally {
+			takeSnap();
 		}
 		
 		return text ;
@@ -716,79 +616,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		String text=null;
 		try {
 			text=driver.findElementByXPath(xpathVal).getText();
-			//System.out.println("The element with xpath "+xpathVal+" contains text "+text);
-			reportStep("The element with xpath "+xpathVal+" contains text "+text,"pass");
+			System.out.println("The element with xpath "+xpathVal+" contains text "+text);
 		} catch (NoSuchElementException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpathVal+" is not found in DOM");
-			reportStep("The element with xpath "+xpathVal+" is not found in DOM","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not found in DOM");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not visible in Application");
-			reportStep("The element with xpath "+xpathVal+" is not visible in Application","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not visible in Application");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not stable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not stable in Application","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not stable in Application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not interacatable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not interacatable in Application","fail");
+			System.err.println("The element with xpath "+xpathVal+" is not interacatable in Application");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" cannot get text due to unexpected alert occured");
-			reportStep("The element with xpath "+xpathVal+" cannot get text due to unexpected alert occured","fail");
+			System.err.println("The element with xpath "+xpathVal+" cannot get text due to unexpected alert occured");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+"cannot get text due to unknown error occured");
-			reportStep("The element with xpath "+xpathVal+"cannot get text due to unknown error occured","fail");
+			System.err.println("The element with xpath "+xpathVal+"cannot get text due to unknown error occured");
 			
 		}
-		return text;
-		
-	}
-	public String getTextByXpathNoSnap(String xpathVal) {
-		// TODO Auto-generated method stub
-		String text=null;
-		try {
-			text=driver.findElementByXPath(xpathVal).getText();
-			//System.out.println("The element with xpath "+xpathVal+" contains text "+text);
-			reportStep("The element with xpath "+xpathVal+" contains text "+text,"pass",false);
-		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpathVal+" is not found in DOM");
-			reportStep("The element with xpath "+xpathVal+" is not found in DOM","fail",false);
-		}
-		catch (ElementNotVisibleException e) {
-			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not visible in Application");
-			reportStep("The element with xpath "+xpathVal+" is not visible in Application","fail",false);
-		}
-		catch (StaleElementReferenceException e) {
-			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not stable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not stable in Application","fail",false);
-		}
-		catch (ElementNotInteractableException e) {
-			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" is not interacatable in Application");
-			reportStep("The element with xpath "+xpathVal+" is not interacatable in Application","fail",false);
-		}
-		catch (UnhandledAlertException e) {
-			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+" cannot get text due to unexpected alert occured");
-			reportStep("The element with xpath "+xpathVal+" cannot get text due to unexpected alert occured","fail",false);
-		}
-		catch (WebDriverException e) {
-			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpathVal+"cannot get text due to unknown error occured");
-			reportStep("The element with xpath "+xpathVal+"cannot get text due to unknown error occured","fail",false);
-			
+		finally {
+			takeSnap();
 		}
 		return text;
 		
@@ -800,42 +655,37 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			WebElement drpdownvisible=driver.findElementById(id);
 			Select sc=new Select(drpdownvisible);
 			sc.selectByVisibleText(value);
-			//System.out.println("The element with id "+id+" is selected with visible value "+value);
-			reportStep("The element with id "+id+" is selected with visible value "+value,"pass");
+			System.out.println("The element with id "+id+" is selected with visible value "+value);
 		} catch (ElementNotSelectableException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+id+ "is not selectable");
-			reportStep("The element with id "+id+ "is not selectable","fail");
+			System.err.println("The element with id "+id+ "is not selectable");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			 //System.err.println("The element with id "+id +"cannot be selected due to unexpected alert opened");
-			reportStep("The element with id "+id +"cannot be selected due to unexpected alert opened","fail");
+			 System.err.println("The element with id "+id +"cannot be selected due to unexpected alert opened");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+ "is not visible in application");
-			reportStep("The element with id "+id+ "is not visible in application","fail");
+			System.err.println("The element with id "+id+ "is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+ "is not interactable");
-			reportStep("The element with id "+id+ "is not interactable","fail");
+			System.err.println("The element with id "+id+ "is not interactable");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+"is not not found in DOM");
-			reportStep("The element with id "+id+"is not not found in DOM","fail");
+			System.err.println("The element with id "+id+"is not not found in DOM");
 		}
 		catch (StaleElementReferenceException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not stable in Application");
-			reportStep("The element with id "+id+" is not stable in Application","fail");
+			System.err.println("The element with id "+id+" is not stable in Application");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+id+" is not selected to some unknown error occured");
-			reportStep("The element with id "+id+" is not selected to some unknown error occured","fail");
+			System.err.print("The element with id "+id+" is not selected to some unknown error occured");
+		}
+		finally {
+			takeSnap();
 		}  
 			// TODO Auto-generated catch block
 		
@@ -848,37 +698,33 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			WebElement dropdownindex=driver.findElementById(id);
 			Select sc=new Select(dropdownindex);
 			sc.selectByIndex(value);
-			//System.out.println("The element with id "+id+" is selected with index "+value);
-			reportStep("The element with id "+id+" is selected with index "+value,"pass");
+			System.out.println("The element with id "+id+" is selected with index "+value);
 		} catch (ElementNotSelectableException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+id+" is not selectable");
-			reportStep("The element with id "+id+" is not selectable","fail");
+			System.err.println("The element with id "+id+" is not selectable");
 		}
 		 catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			 //System.err.println("The element with id "+id +" cannot be selected due to unexpected alert opened");
-			 reportStep("The element with id "+id +" cannot be selected due to unexpected alert opened","fail");
+			 System.err.println("The element with id "+id +" cannot be selected due to unexpected alert opened");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+"is not visible in application");
-			reportStep("The element with id "+id+"is not visible in application","fail");
+			System.err.println("The element with id "+id+"is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not interactable ");
-			reportStep("The element with id "+id+" is not interactable ","fail");
+			System.err.println("The element with id "+id+" is not interactable ");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not not found in DOM ");
-			reportStep("The element with id "+id+" is not not found in DOM ","fail");
+			System.err.println("The element with id "+id+" is not not found in DOM ");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with id "+id+" is not selected to some unknown error occured");
-			reportStep("The element with id "+id+" is not selected to some unknown error occured","fail");
+			System.err.print("The element with id "+id+" is not selected to some unknown error occured");
+		}
+		finally {
+			takeSnap();
 		}
 			 
 		
@@ -894,19 +740,19 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			}
 		} catch (NoSuchWindowException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("can't able to switch to parent window as there is no such window");
-			reportStep("can't able to switch to parent window as there is no such window","fail");
+			System.err.println("can't able to switch to parent window as there is no such window");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("can't able to switch to parent window due to unexpected alert occured");
-			reportStep("can't able to switch to parent window due to unexpected alert occured","fail");
+			System.err.println("can't able to switch to parent window due to unexpected alert occured");
 		}
 		
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			  //System.err.println("can't able to switch to parent window due to unknown error occured");
-			  reportStep("can't able to switch to parent window due to unknown error occured","fail");
+			  System.err.println("can't able to switch to parent window due to unknown error occured");
+		}
+		finally {
+			takeSnap();
 		}
 	}
 
@@ -919,22 +765,21 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			for(String eachid:list) {
 				driver.switchTo().window(eachid);
 			}
-			//System.out.println("The browser switched in to last window");
-			reportStep("The browser switched in to last window","pass");
+			System.out.println("The browser switched in to last window");
 		} catch (NoSuchWindowException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("can't able to switch to last window as there is no such window");
-			reportStep("can't able to switch to last window as there is no such window","fail");
+			System.err.println("can't able to switch to last window as there is no such window");
 		}
 		 catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			 //System.err.println("can't able to switch to last window due to unexpected alert occured");
-			 reportStep("can't able to switch to last window due to unexpected alert occured","fail");
+			 System.err.println("can't able to switch to last window due to unexpected alert occured");
 		}
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			  //System.err.println("can't able to switch to last window due to unknown error ");
-			  reportStep("can't able to switch to last window due to unknown error ","fail");
+			  System.err.println("can't able to switch to last window due to unknown error ");
+		}
+		finally {
+			takeSnap();
 		}
 	}
 
@@ -942,19 +787,15 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.switchTo().alert().accept();
-			//System.out.println("alert accepted succesfully");
-			reportStep("alert accepted succesfully","pass",false);
+			System.out.println("alert accepted succesfully");
 		} catch (NoAlertPresentException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("alert is not present");
-		reportStep("alert is not present","fail",false);
-			
+			System.err.println("alert is not present");
 		}
 		
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("can't able to accept alert due to unknown error occured");
-			reportStep("can't able to accept alert due to unknown error occured","fail");
+			System.err.println("can't able to accept alert due to unknown error occured");
 		}
 		
 	}
@@ -964,17 +805,14 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.switchTo().alert().dismiss();
-			//System.out.println("cancelled alert succesfully");
-			reportStep("cancelled alert succesfully","pass",false);
+			System.out.println("cancelled alert succesfully");
 		} catch (NoAlertPresentException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("alert is not present");
-			reportStep("alert is not present","fail",false);
+			System.err.println("alert is not present");
 					}		  
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			 // System.err.println("can't able to perform cancel operation due to unknown error occured");
-			reportStep("can't able to perform cancel operation due to unknown error occured","fail",false);
+			  System.err.println("can't able to perform cancel operation due to unknown error occured");
 		}
 	}
 
@@ -983,17 +821,14 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		String alert=null;
 		try {
 			alert=driver.switchTo().alert().getText();
-			//System.out.println(alert);
-			reportStep("captured the alert text "+alert+" succesfully","pass",false);
+			System.out.println(alert);
 		} catch (NoAlertPresentException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("alert is not present");
-			reportStep("alert is not present","fail",false);
+			System.err.println("alert is not present");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("unknown error occured");
-			reportStep("unknown error occured","fail",false);
+			System.err.println("unknown error occured");
 		}
 		return alert;
 		
@@ -1001,27 +836,21 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		
 	}
 
-	public long takeSnap() {
+	public void takeSnap() {
 		// TODO Auto-generated method stub
-		
-		long number=0;
 		try {
-			
-			number=(long)Math.floor(Math.random()*1000000000)+100000;
 			File tmp=driver.getScreenshotAs(OutputType.FILE);
-			File dest=new File("./Results/screenshots/snap"+number+".png");
+			File dest=new File("./screenshots/snap"+i+".png");
 			FileUtils.copyFile(tmp, dest);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("cannot able to take screenshot due to problem in accessing file");
-			reportStep("cannot able to take screenshot due to problem in accessing file","fail",false);
+			System.err.println("cannot able to take screenshot due to problem in accessing file");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("cannot able to take screenshot due to unknown error occured");
-			reportStep("cannot able to take screenshot due to unknown error occured","fail",false);
+			System.err.println("cannot able to take screenshot due to unknown error occured");
 		}
-		return number;
+		i++;
 		
 	}
 
@@ -1029,28 +858,24 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.close();
-			//System.out.println("closed current browser");
-			reportStep("closed current browser","pass",false);
+			System.out.println("closed current browser");
 		} 
 		
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.println("cannot able gto close browser due to unknown error occured");
-			reportStep("cannot able gto close browser due to unknown error occured","fail",false);
+			System.err.println("cannot able gto close browser due to unknown error occured");
 		}
 	}
 	public void closeAllBrowsers() {
 		// TODO Auto-generated method stub
 		try {
 			driver.quit();
-			//System.out.println("closed all browsers");
-			reportStep("closed all browsers","pass",false);
+			System.out.println("closed all browsers");
 		}
 		
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("Cannot able to close all browsers due to unknown error");
-			reportStep("Cannot able to close all browsers due to unknown error","fail",false);
+			System.err.print("Cannot able to close all browsers due to unknown error");
 		}
 
 		
@@ -1062,8 +887,7 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("Error throws on waiting");
-			reportStep("Error throws on waiting","fail");
+			System.err.println("Error throws on waiting");
 			
 			
 		}
@@ -1077,41 +901,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			WebElement dropdownindex=driver.findElementByXPath(xpath);
 			Select sc=new Select(dropdownindex);
 			sc.selectByVisibleText(text);
-			//System.out.println("The element with xpath"+xpath+" is selected with value "+text);
-			reportStep("The element with xpath"+xpath+" is selected with value "+text,"pass");
+			System.out.println("The element with xpath"+xpath+" is selected with value "+text);
 		} catch (ElementNotSelectableException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with xpath "+xpath+" is not selectable");
-			reportStep("The element with xpath "+xpath+" is not selectable","fail");
+			System.err.println("The element with xpath "+xpath+" is not selectable");
 		}
 		 catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			// System.err.println("The element with xpath "+xpath +" cannot be selected due to unexpected alert opened");
-			 reportStep("The element with xpath "+xpath +" cannot be selected due to unexpected alert opened","fail");
+			 System.err.println("The element with xpath "+xpath +" cannot be selected due to unexpected alert opened");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+"is not visible in application");
-			reportStep("The element with xpath "+xpath+"is not visible in application","fail");
+			System.err.println("The element with xpath "+xpath+"is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" is not interactable ");
-			reportStep("The element with xpath "+xpath+" is not interactable ","fail");
+			System.err.println("The element with xpath "+xpath+" is not interactable ");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with xpath "+xpath+" is not not found in DOM ");
-			reportStep("The element with xpath "+xpath+" is not  found in DOM ","fail");
+			System.err.println("The element with xpath "+xpath+" is not not found in DOM ");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with xpath "+xpath+" is not selected to some unknown error occured");
-			reportStep("The element with xpath "+xpath+" is not selected to some unknown error occured","fail");
+			System.err.print("The element with xpath "+xpath+" is not selected to some unknown error occured");
 		}
-		//finally {
-		//	takeSnap();
-		//}
+		finally {
+			takeSnap();
+		}
 			 
 		
 	}
@@ -1120,49 +937,42 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.switchTo().frame(id);
-			//System.out.println("The browser switched to frame with id "+id);
-			reportStep("The browser switched to frame with id "+id,"pass",false);
+			System.out.println("The browser switched to frame with id "+id);
 		} catch (NoSuchFrameException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("can't able to switch to frame as there is no such frame");
-			reportStep("can't able to switch to frame as there is no such frame","fail",false);
+			System.err.println("can't able to switch to frame as there is no such frame");
 		}
 		catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("can't able to switch to frame due to unexpected alert occured");
-			reportStep("can't able to switch to frame due to unexpected alert occured","fail",false);
+			System.err.println("can't able to switch to frame due to unexpected alert occured");
 		}
 		
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			 // System.err.println("can't able to switch to frame due to unknown error occured");
-			  reportStep("can't able to switch to frame due to unknown error occured","fail",false);
+			  System.err.println("can't able to switch to frame due to unknown error occured");
 		}
-		//finally {
-		//	takeSnap();
-		//}
+		finally {
+			takeSnap();
+		}
 	}
 
 	public void switchToDefault() {
 		// TODO Auto-generated method stub
 		try {
 			driver.switchTo().defaultContent();
-			//System.out.println("browser switched in to default content");
-			reportStep("browser switched in to default content","pass",false);
+			System.out.println("browser switched in to default content");
 		} catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			//System.err.println("can't able to switch default content due to unexpected alert occured");
-			reportStep("can't able to switch default content due to unexpected alert occured","fail",false);
+			System.err.println("can't able to switch default content due to unexpected alert occured");
 		}
 		
 		  catch (WebDriverException e) {
 			// TODO: handle exception
-			  //System.err.println("can't able to switch to default content  due to unknown error occured");
-			  reportStep("can't able to switch to default content  due to unknown error occured","fail",false);
+			  System.err.println("can't able to switch to default content  due to unknown error occured");
 		}
-		//finally {
-		//	takeSnap();
-		//}
+		finally {
+			takeSnap();
+		}
 		
 	}
 
@@ -1170,12 +980,10 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.navigate().refresh();
-			//System.out.println("page got refreshed");
-			reportStep("page got refreshed","pass");
+			System.out.println("page got refreshed");
 		} catch (WebDriverException e) {
 			// TODO Auto-generated catch block
-			//System.out.println("can't able to refresh due to unknown error occured");
-			reportStep("can't able to refresh due to unknown error occured","fail");
+			System.out.println("can't able to refresh due to unknown error occured");
 		}
 		
 		
@@ -1185,12 +993,10 @@ public class GenericWrappers extends Reporting implements Wrappers {
 		// TODO Auto-generated method stub
 		try {
 			driver.switchTo().alert().sendKeys(text);
-			//System.out.println(" In alert text box entered with data "+text);
-			reportStep(" In alert text box entered with data "+text,"pass",false);
+			System.out.println(" In alert text box entered with data "+text);
 		} catch (WebDriverException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("page can't refersh due to unknown error occured");
-			reportStep("page can't refersh due to unknown error occured","fail",false);
+			System.err.println("page can't refersh due to unknown error occured");
 		}
 		
 	}
@@ -1201,41 +1007,34 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			WebElement st=driver.findElementById(id);
 			Select sc= new Select(st);
 			sc.selectByValue(text);
-			//System.out.println("The element with id "+id+" is selected with value "+text);
-			reportStep("The element with id "+id+" is selected with value "+text,"pass");
+			System.out.println("The element with id "+id+" is selected with value "+text);
 		}  catch (ElementNotSelectableException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with id "+id+" is not selectable");
-			reportStep("The element with id "+id+" is not selectable","fail");
+			System.err.println("The element with id "+id+" is not selectable");
 		}
 		 catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			 //System.err.println("The element with id "+id +" cannot be selected due to unexpected alert opened");
-			 reportStep("The element with id "+id +" cannot be selected due to unexpected alert opened","fail");
+			 System.err.println("The element with id "+id +" cannot be selected due to unexpected alert opened");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+"is not visible in application");
-			reportStep("The element with id "+id+"is not visible in application","fail");
+			System.err.println("The element with id "+id+"is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not interactable ");
-			reportStep("The element with id "+id+" is not interactable ","fail");
+			System.err.println("The element with id "+id+" is not interactable ");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with id "+id+" is not not found in DOM ");
-			reportStep("The element with id "+id+" is not not found in DOM ","fail");
+			System.err.println("The element with id "+id+" is not not found in DOM ");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element id "+id+" is not selected to some unknown error occured");
-			reportStep("The element id "+id+" is not selected to some unknown error occured","fail");
+			System.err.print("The element id "+id+" is not selected to some unknown error occured");
 		}
-		//finally {
-		//	takeSnap();
-		//}
+		finally {
+			takeSnap();
+		}
 		
 		
 	}
@@ -1246,116 +1045,73 @@ public class GenericWrappers extends Reporting implements Wrappers {
 			WebElement st=driver.findElementByName(name);
 			Select sc= new Select(st);
 			sc.selectByValue(value);
-			//System.out.println("The element with name "+name+" is selected with value "+value);
-			reportStep("The element with name "+name+" is selected with value "+value,"pass");
+			System.out.println("The element with name "+name+" is selected with value "+value);
 		}  catch (ElementNotSelectableException e) {
 			// TODO Auto-generated catch block
-			//System.err.println("The element with name "+name+" is not selectable");
-			reportStep("The element with name "+name+" is not selectable","fail");
+			System.err.println("The element with name "+name+" is not selectable");
 		}
 		 catch (UnhandledAlertException e) {
 			// TODO: handle exception
-			 //System.err.println("The element with name "+name +" cannot be selected due to unexpected alert opened");
-			 reportStep("The element with name "+name +" cannot be selected due to unexpected alert opened","fail");
+			 System.err.println("The element with name "+name +" cannot be selected due to unexpected alert opened");
 		}
 		catch (ElementNotVisibleException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+"is not visible in application");
-			reportStep("The element with name "+name+"is not visible in application","fail");
+			System.err.println("The element with name "+name+"is not visible in application");
 		}
 		catch (ElementNotInteractableException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" is not interactable ");
-			reportStep("The element with name "+name+" is not interactable ","fail");
+			System.err.println("The element with name "+name+" is not interactable ");
 		}
 		catch (NoSuchElementException e) {
 			// TODO: handle exception
-			//System.err.println("The element with name "+name+" is not not found in DOM ");
-			reportStep("The element with name "+name+" is not not found in DOM ","fail");
+			System.err.println("The element with name "+name+" is not not found in DOM ");
 		}
 		catch (WebDriverException e) {
 			// TODO: handle exception
-			//System.err.print("The element with name "+name+" is not selected to some unknown error occured");
-			reportStep("The element with name "+name+" is not selected to some unknown error occured","fail");
+			System.err.print("The element with name "+name+" is not selected to some unknown error occured");
 		}
-		//finally {
-		//	takeSnap();
-		//}
+		finally {
+			takeSnap();
+		}
 		
 	}
 
-	public void gstCal(String text1) {
+	public void gstCal(String xpath1,String xpath2,String xpath3,String text1,String text2,String text3) {
 		// TODO Auto-generated method stub
 		    try {
-				String fullday=driver.findElementByXPath("/html/body/app-root/app-fulllayout/app-summary/div[2]/div/div/div[2]/div[1]/div/div/div/div[2]").getText();
-				System.out.println(fullday);
-				String frstrep=fullday.replace("3 Guests, 1 Room, "," ");
-				String secrep=frstrep.replace("Nights"," ");
+				String fullday=getTextByXpath(xpath1);
+				String frstrep=fullday.replace(text1+text2,"");
+				String secrep=frstrep.replace(text3,"");
 				int days =Integer.parseInt(secrep);
-				String rate=text1;
-				System.out.println(rate);
-				String price=rate.replace("₹ "," ");
+				String rate=getTextByXpath(xpath2);
+				String price=rate.replace("₹","");
 				int newprice=Integer.parseInt(price);
 				int cal=0;
 				cal=(int) Math.ceil((double)Math.round(days*newprice*1.12*100)/100);
 				cal=cal+(cal*12/100); 
-				String newrate=driver.findElementByXPath("/html/body/app-root/app-fulllayout/app-summary/div[2]/div/div/div[2]/div[2]/div/div/div[3]/strong").getText();
-				System.out.println(newrate);
-				String newreprate=newrate.replace("₹ ", "");
+				String newrate= getTextByXpath(xpath3);
+				String newreprate=newrate.replace("₹", "");
 				int newreprate1=Integer.parseInt(newreprate);
 				if(cal==newreprate1) {
-					//System.out.print("rate same");
-					reportStep("rate same","pass");
+					System.out.print("rate same");
 				}
 				else {
-					//ystem.out.print("not same");
-					reportStep("not same","pass");
+					System.out.print("not same");
 				}
 			} catch (NoSuchElementException e) {
 				// TODO Auto-generated catch block
-				//System.err.println("The element with xpath is not found in DOM");
-				reportStep("The element with xpath is not found in DOM","fail");
-				
+				System.err.println("The element with xpath is not found in DOM");
 			}
-		   // finally {
-		    //	takeSnap();
-		   // }
-		    
+		    finally {
+		    	takeSnap();
+		    }
 
 		
 	}
 
-	public void switchToFrameByXpath(String xpath) {
-		// TODO Auto-generated method stub
-		try {
-			driver.switchTo().frame(xpath);
-			reportStep("The browser switched to frame with xpath "+xpath,"pass",false);
-		} catch (NoSuchFrameException e) {
-			// TODO Auto-generated catch block
-			reportStep("The browser can't able to switchto frame as there is no such frame","fail",false);
-		}
-
-		
-		
-	}
-	public void clickDropDownByXpath(String xpathVal, String Name) {
-		// TODO Auto-generated method stub
-		try {
-			String xpathLatest = null;
-			if(xpathVal.contains("$option$")) {
-				xpathLatest=xpathVal.replace("$option$", Name);
-			}			
-			driver.findElementByXPath(xpathLatest).click();
-			reportStep("The option with name "+Name+" clicked succesfully","pass");
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-		}
 		
 	
-	
 	}
-}
 
 	
 

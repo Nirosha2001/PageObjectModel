@@ -189,6 +189,12 @@ public interface Wrappers {
 	 * This method will take snapshot of the browser
 	 * @author Basha - LibertyTestingCenter
 	 */
+	public void takeSnap();
+		
+	/**
+	 * This method will close the active browser
+	 * @author Basha - LibertyTestingCenter
+	 */
 	public void closeBrowser();
 	
 	
@@ -211,8 +217,6 @@ public interface Wrappers {
     public void selectValueById(String id, String text);
     
     public void selectValueByName(String name,String value);
-    
-    public void switchToFrameByXpath(String xpath);
     
     
     
